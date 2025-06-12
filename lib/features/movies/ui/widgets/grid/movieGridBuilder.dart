@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:moviesinc/features/movies/ui/common/movieCards/movieCard.dart';
 
 class GridCreator extends StatelessWidget {
-  const GridCreator({super.key, required this.movieList, this.loading = false});
+  const GridCreator({super.key, this.movieList});
+
   final List<Map<String, dynamic>>? movieList;
-  final bool loading;
   @override
   Widget build(BuildContext context) {
     final hasMovies = movieList != null && movieList!.isNotEmpty;

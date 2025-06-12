@@ -28,6 +28,7 @@ class _BaseLayoutState extends State<BaseLayout> {
     _pages = [
       HomePage(),
       SearchPage(),
+      Placeholder(),
       // ProfilePage(),
     ];
   }
@@ -67,7 +68,7 @@ class _BaseLayoutState extends State<BaseLayout> {
           ),
         ],
       ),
-      body: _pages[_selectedIndex], // Show the selected page
+      body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onTabTapped,

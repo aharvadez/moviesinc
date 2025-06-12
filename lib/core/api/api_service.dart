@@ -14,17 +14,6 @@ void setDioAuthorizationHeader() {
   }
 }
 
-// void setDioAuthorizationHeader() {
-//   if (!dio.options.headers.containsKey('Authorization')) {
-//     final token = dotenv.env['ACCESS_TOKEN'];
-//     if (token == null) {
-//       throw Exception('ACCESS_TOKEN not found in .env');
-//     }
-//     dio.options.headers['accept'] = 'application/json';
-//     dio.options.headers['Authorization'] = 'Bearer $token';
-//   }
-// }
-
 class MoviesSearchApiRequest {
   MoviesSearchApiRequest();
 
@@ -57,13 +46,21 @@ class PopularMoviesApiRequest {
 
   Future<Map<String, dynamic>> fetchData({int pageNumber = 1}) async {
     setDioAuthorizationHeader();
-    try {
-      var response = await dio.get(url);
-
-      // print(response.data);
-      return response.data as Map<String, dynamic>;
-    } catch (e) {
-      throw Exception('Failed to fetch data: $e');
+    const maxAttempts = 15;
+    int attempts = 0;
+    while (attempts < maxAttempts) {
+      try {
+        final response = await dio.get(url);
+        return response.data as Map<String, dynamic>;
+      } catch (e) {
+        attempts++;
+        if (attempts >= maxAttempts) {
+          throw Exception(
+            'Failed to fetch data after $maxAttempts attempts: $e',
+          );
+        }
+      }
     }
+    throw Exception('Failed to fetch data after $maxAttempts attempts');
   }
 }
