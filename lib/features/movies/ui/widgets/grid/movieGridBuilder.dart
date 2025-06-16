@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.dart';
 import 'package:moviesinc/features/movies/ui/common/movieCards/movieCard.dart';
 
 class GridCreator extends StatelessWidget {
   const GridCreator({super.key, this.movieList});
 
-  final List<Map<String, dynamic>>? movieList;
+  final List<MovieEntityModel>? movieList;
   @override
   Widget build(BuildContext context) {
     final hasMovies = movieList != null && movieList!.isNotEmpty;
@@ -21,13 +22,7 @@ class GridCreator extends StatelessWidget {
           return const MovieCard(isLoading: true);
         }
         final movie = movieList![index];
-        return MovieCard(
-          title: movie['title'] as String,
-          year: movie['year'] as String,
-          genre: movie['genre'] as String,
-          rating: movie['rating'] as double,
-          posterUrl: movie['posterUrl'] as String,
-        );
+        return MovieCard(movie: movie);
       },
     );
   }

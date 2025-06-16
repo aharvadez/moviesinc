@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.dart';
 import 'package:moviesinc/features/movies/ui/common/movieCards/fullScreenMovieCard.dart';
 import 'package:moviesinc/features/movies/ui/common/movieCards/imageWidget.dart';
+import 'package:moviesinc/features/movies/ui/widgets/favButton/favButton.dart';
 
 class MovieCard extends StatelessWidget {
-  final String? title;
-  final String? year;
-  final String? genre;
-  final double? rating;
-  final String? posterUrl;
+  final MovieEntityModel? movie;
   final bool isLoading;
 
-  const MovieCard({
-    super.key,
-    this.title,
-    this.year,
-    this.genre,
-    this.rating,
-    this.posterUrl,
-    this.isLoading = false,
-  });
+  const MovieCard({super.key, this.movie, this.isLoading = false})
+    : assert((movie != null) || isLoading);
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
+    if (isLoading || movie == null) {
       return _buildLoadingCard();
     } else {
       return GestureDetector(
@@ -31,35 +22,14 @@ class MovieCard extends StatelessWidget {
             context: context,
             barrierDismissible: true,
             barrierLabel: 'Close',
-            barrierColor: Colors.black.withOpacity(0.2),
+            barrierColor: Colors.black.withAlpha(1),
             transitionDuration: Duration(milliseconds: 300),
             pageBuilder: (_, __, ___) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Material(
-                  color: Colors.transparent,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    color: Colors.black.withOpacity(0.9),
-                    child: SafeArea(
-                      child: FullScreenMovieCard(
-                        title: title,
-                        year: year,
-                        genre: genre,
-                        rating: rating,
-                        posterUrl: posterUrl,
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              return FullScreenMovieCard(movie: movie!);
             },
           );
         },
-        child: _buildCard(),
+        child: _buildCard(context),
       );
     }
   }
@@ -81,9 +51,9 @@ class MovieCard extends StatelessWidget {
                 color: Colors.grey[300],
                 borderRadius: BorderRadius.circular(16),
               ),
-              // constraints: BoxConstraints(
-              //   minHeight: 80, // Optional: set a minimum height if needed
-              // ),
+              constraints: BoxConstraints(
+                minHeight: 80, // Optional: set a minimum height if needed
+              ),
             ),
             Padding(
               padding: const EdgeInsets.all(6.0),
@@ -111,54 +81,59 @@ class MovieCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCard() {
+  Widget _buildCard(BuildContext context) {
     return SizedBox(
-      width: 100, // set your desired width
+      width: 100,
       child: Card(
         elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: SizedBox(
-          width: 100,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Imagewidget(imageUrl: posterUrl ?? ''),
-
-              // Movie details
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      title ?? '',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '$year • $genre',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 18),
-                        SizedBox(width: 4),
-                        Text(
-                          rating.toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                  child: Imagewidget(imageUrl: movie?.posterUrl ?? ''),
                 ),
+                Positioned(top: 6, right: 6, child: Favbutton(movie: movie!)),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    movie?.title ?? '',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    '${movie?.year ?? ''} • ${movie?.genre ?? ''}',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.star, color: Colors.amber, size: 18),
+                      SizedBox(width: 4),
+                      Text(
+                        "${movie?.rating ?? ''}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

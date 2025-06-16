@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.dart';
 import 'package:moviesinc/features/movies/ui/widgets/carousel/carouselDescriptor.dart';
 import 'package:moviesinc/features/movies/ui/widgets/carousel/movieCardCarousel.dart';
 
 class CarouselCreator extends StatelessWidget {
   const CarouselCreator({super.key, required this.movieList});
-  final List<Map<String, dynamic>>? movieList;
+  final List<MovieEntityModel>? movieList;
 
   @override
   Widget build(BuildContext context) {

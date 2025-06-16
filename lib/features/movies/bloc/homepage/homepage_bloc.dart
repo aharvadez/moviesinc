@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.dart';
 import 'package:moviesinc/features/movies/repository/movie_repository.dart';
 
 part "homepage_event.dart";
@@ -9,21 +10,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<HomePageLoadEvent>((event, emit) async {
       emit(HomePageLoading());
       try {
-        emit(HomePageError("Failed to load movies"));
         final movies = await GetPopularMovies().fetchMovies();
-        final movieList = movies
-            .map(
-              (movie) => {
-                "id": movie.id,
-                "title": movie.title,
-                "year": movie.year,
-                "genre": movie.genre,
-                "rating": movie.rating,
-                "posterUrl": movie.posterUrl,
-              },
-            )
-            .toList();
-        emit(HomePageLoaded(movieList));
+
+        emit(HomePageLoaded(movies));
       } catch (e) {
         emit(HomePageError("Failed to load movies: $e"));
       }

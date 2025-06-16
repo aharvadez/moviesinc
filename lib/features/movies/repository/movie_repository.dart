@@ -4,11 +4,11 @@ import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.d
 import 'package:moviesinc/features/movies/repository/mappers/tmdbMapper.dart';
 
 class GetPopularMovies {
-  final PopularMoviesApiRequest apiRequest = PopularMoviesApiRequest();
+  final ApiService apiRequest = ApiService();
   final Tmdbmapper mapper = Tmdbmapper();
 
   Future<List<MovieEntityModel>> fetchMovies() async {
-    final response = await apiRequest.fetchData();
+    final response = await apiRequest.fetchPopularMovies();
     final List<TmdbMovieNetworkModel> movies = (response['results'] as List)
         .map((e) => TmdbMovieNetworkModel.fromJson(e))
         .toList();
@@ -22,11 +22,11 @@ class SearchMovies {
   final String query;
   final int pageNumber;
 
-  final apiRequest = MoviesSearchApiRequest();
+  final apiRequest = ApiService();
   final Tmdbmapper mapper = Tmdbmapper();
 
   Future<List<MovieEntityModel>> fetchData() async {
-    final response = await apiRequest.fetchData(query: query);
+    final response = await apiRequest.fetchSearchMovies(query: query);
     final List<TmdbMovieNetworkModel> movies = (response['results'] as List)
         .map((e) => TmdbMovieNetworkModel.fromJson(e))
         .toList();

@@ -21,7 +21,7 @@ class Imagewidget extends StatelessWidget {
       );
     } else {
       return SizedBox(
-        // width: double.infinity,
+        width: double.infinity,
         height: 150,
         child: Center(
           child: Image.network(

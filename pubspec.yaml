@@ -37,10 +37,15 @@ dependencies:
   dio: ^5.8.0+1
   flutter_bloc: ^9.1.1
   flutter_dotenv: ^5.2.1
+  objectbox_flutter_libs: ^4.3.0
+  objectbox: ^4.3.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  objectbox_generator: ^4.3.0
+  build_runner: ^2.4.15
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

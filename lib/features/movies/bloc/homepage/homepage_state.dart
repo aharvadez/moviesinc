@@ -7,7 +7,7 @@ class HomePageInitial extends HomePageState {}
 class HomePageLoading extends HomePageState {}
 
 class HomePageLoaded extends HomePageState {
-  final List<Map<String, dynamic>> movieList;
+  final List<MovieEntityModel> movieList;
 
   HomePageLoaded(this.movieList);
 }

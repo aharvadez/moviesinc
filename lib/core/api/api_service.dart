@@ -1,66 +1,72 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-final Dio dio = Dio();
+class ApiService {
+  static final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: dotenv.env['API_URL'] ?? '',
+      headers: {'accept': 'application/json'},
+    ),
+  );
 
-void setDioAuthorizationHeader() {
-  if (!dio.options.headers.containsKey('Authorization')) {
-    final token = dotenv.env['ACCESS_TOKEN'];
-    if (token == null) {
-      throw Exception('ACCESS_TOKEN not found in .env');
-    }
-    dio.options.headers['accept'] = 'application/json';
-    dio.options.headers['Authorization'] = 'Bearer $token';
+  ApiService._internal() {
+    _dio.interceptors.clear();
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final token = dotenv.env['ACCESS_TOKEN'];
+          if (token == null) {
+            throw Exception('ACCESS_TOKEN not found in .env');
+          }
+          options.headers['Authorization'] = 'Bearer $token';
+          return handler.next(options);
+        },
+        onError: (DioException error, ErrorInterceptorHandler handler) async {
+          final options = error.requestOptions;
+          const maxAttempts = 15;
+          int attempts = (options.extra['retry_attempt'] ?? 0) + 1;
+
+          if (attempts < maxAttempts) {
+            options.extra['retry_attempt'] = attempts;
+            await Future.delayed(const Duration(milliseconds: 100));
+            try {
+              final response = await _dio.fetch(options);
+              return handler.resolve(response);
+            } catch (e) {
+              return handler.next(error); // still failed, forward the error
+            }
+          }
+
+          return handler.next(error); // max retry hit
+        },
+      ),
+    );
   }
-}
 
-class MoviesSearchApiRequest {
-  MoviesSearchApiRequest();
+  static final ApiService _instance = ApiService._internal();
+  factory ApiService() => _instance;
 
-  String url(String query, {int pageNumber = 1}) {
+  String get baseUrl {
     final baseUrl = dotenv.env['API_URL'];
-
-    return '${baseUrl}search/movie?query=$query&page=$pageNumber';
+    if (baseUrl == null) {
+      throw Exception('API_URL not found in .env');
+    }
+    return baseUrl;
   }
 
-  Future<Map<String, dynamic>> fetchData({
-    int pageNumber = 1,
-    required String query,
+  Future<Map<String, dynamic>> fetchData(String path) async {
+    final response = await _dio.get(path);
+    return response.data;
+  }
+
+  Future<Map<String, dynamic>> fetchPopularMovies() async {
+    return fetchData('movie/popular?language=en-US&page=1');
+  }
+
+  Future<Map<String, dynamic>> fetchSearchMovies({
+    query,
+    pageNumber = 1,
   }) async {
-    setDioAuthorizationHeader();
-    try {
-      final response = await dio.get(url(query, pageNumber: pageNumber));
-      return response.data as Map<String, dynamic>;
-    } catch (e) {
-      throw Exception('Failed to fetch data: $e');
-    }
-  }
-}
-
-class PopularMoviesApiRequest {
-  String get url {
-    final baseUrl = dotenv.env['API_URL'];
-
-    return '${baseUrl}movie/popular?language=en-US&page=1';
-  }
-
-  Future<Map<String, dynamic>> fetchData({int pageNumber = 1}) async {
-    setDioAuthorizationHeader();
-    const maxAttempts = 15;
-    int attempts = 0;
-    while (attempts < maxAttempts) {
-      try {
-        final response = await dio.get(url);
-        return response.data as Map<String, dynamic>;
-      } catch (e) {
-        attempts++;
-        if (attempts >= maxAttempts) {
-          throw Exception(
-            'Failed to fetch data after $maxAttempts attempts: $e',
-          );
-        }
-      }
-    }
-    throw Exception('Failed to fetch data after $maxAttempts attempts');
+    return fetchData('search/movie?query=$query&page=$pageNumber');
   }
 }

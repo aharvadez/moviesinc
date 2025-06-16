@@ -1,5 +1,5 @@
 class MovieEntityModel {
-  final String id;
+  int id;
   final String title;
   final String year;
   final String genre;

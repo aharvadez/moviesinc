@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:moviesinc/core/constants/themes.dart';
+import 'package:moviesinc/core/utils/objectbox_helper.dart';
+import 'package:moviesinc/features/movies/bloc/favorities/favorities_bloc.dart';
 import 'package:moviesinc/features/movies/ui/widgets/baseLayout/base_layout.dart';
+
+late ObjectBox objectBox;
 
 void main() async {
   await dotenv.load(fileName: ".env");
+  objectBox = await ObjectBox.create();
+  // objectBox.movieBox.removeAll();
   runApp(MoviesApp());
 }
 
@@ -25,10 +32,17 @@ class MoviesApp extends StatelessWidget {
           darkTheme: darkTheme,
           themeMode: _themeNotifier.value,
 
-          home: BaseLayout(
-            title: 'Movies Inc.',
-            value: _themeNotifier.value,
-            themeNotifier: _themeNotifier,
+          home: MultiBlocProvider(
+            providers: [
+              BlocProvider<FavoritiesBloc>(
+                create: (context) => FavoritiesBloc(),
+              ),
+            ],
+            child: BaseLayout(
+              title: 'Movies Inc.',
+              value: _themeNotifier.value,
+              themeNotifier: _themeNotifier,
+            ),
           ),
         );
       },
