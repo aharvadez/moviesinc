@@ -59,7 +59,7 @@ class _BaseLayoutState extends State<BaseLayout> {
           ),
           actions: [
             IconButton(
-              icon: widget.value == ThemeMode.light
+              icon: widget.themeNotifier.value == ThemeMode.light
                   ? Icon(Icons.toggle_off, size: 50)
                   : Icon(Icons.toggle_on, size: 50),
               color: Theme.of(context).colorScheme.onPrimary,
@@ -76,6 +76,10 @@ class _BaseLayoutState extends State<BaseLayout> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           onTap: _onTabTapped,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Theme.of(
+            context,
+          ).colorScheme.onSurface.withOpacity(0.6),
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),

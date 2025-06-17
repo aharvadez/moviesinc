@@ -59,8 +59,8 @@ class ApiService {
     return response.data;
   }
 
-  Future<Map<String, dynamic>> fetchPopularMovies() async {
-    return fetchData('movie/popular?language=en-US&page=1');
+  Future<Map<String, dynamic>> fetchPopularMovies({int pageNumber = 1}) async {
+    return fetchData('movie/popular?language=en-US&page=$pageNumber');
   }
 
   Future<Map<String, dynamic>> fetchSearchMovies({
@@ -68,5 +68,9 @@ class ApiService {
     pageNumber = 1,
   }) async {
     return fetchData('search/movie?query=$query&page=$pageNumber');
+  }
+
+  Future<Map<String, dynamic>> getGenres() async {
+    return fetchData('genre/movie/list?language=en');
   }
 }

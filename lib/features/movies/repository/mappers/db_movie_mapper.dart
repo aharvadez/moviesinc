@@ -1,4 +1,6 @@
+import 'package:moviesinc/core/localDb/genre_id.dart';
 import 'package:moviesinc/core/localDb/movie_entity_db.dart';
+import 'package:moviesinc/features/movies/repository/entities/genreEntityModel.dart';
 import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.dart';
 
 class DBMovieMapper {
@@ -10,6 +12,7 @@ class DBMovieMapper {
       genre: model.genre,
       rating: model.rating,
       posterUrl: model.posterUrl,
+      overview: model.overview,
     );
   }
 
@@ -27,6 +30,7 @@ class DBMovieMapper {
       genre: model.genre,
       rating: model.rating,
       posterUrl: model.posterUrl,
+      overview: model.overview,
     );
   }
 
@@ -34,5 +38,13 @@ class DBMovieMapper {
     List<MovieEntityFavouritesDB> models,
   ) {
     return models.map(fromDbEntityModel).toList();
+  }
+
+  GenreEntityModel fromGenreDBModel(GenreId model) {
+    return GenreEntityModel(id: model.id, genre: model.genre);
+  }
+
+  List<GenreEntityModel> fromGenreDBModelList(List<GenreId> models) {
+    return models.map(fromGenreDBModel).toList();
   }
 }

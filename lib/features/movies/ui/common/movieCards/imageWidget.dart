@@ -5,39 +5,48 @@ class Imagewidget extends StatelessWidget {
   const Imagewidget({super.key, required this.imageUrl});
   final String imageUrl;
 
+  String getFullImageUrl(String imageUrl) {
+    if (imageUrl[0] == '/') {
+      return '${dotenv.env['TMDB_IMAGE_BASE_URL']!}${imageUrl.substring(1)}';
+    } else {
+      // Treat as a remote image from TMDB
+      return '${dotenv.env['TMDB_IMAGE_BASE_URL']!}$imageUrl';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (imageUrl.isEmpty) {
-      return SizedBox(
-        width: double.infinity,
-        height: 150,
-        child: Container(
-          margin: EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      );
-    } else {
-      return SizedBox(
-        width: double.infinity,
-        height: 150,
-        child: Center(
-          child: Image.network(
-            dotenv.env['TMDB_IMAGE_BASE_URL']! + imageUrl,
-            fit: BoxFit
-                .cover, // or BoxFit.fill / BoxFit.contain depending on your need
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Center(child: CircularProgressIndicator());
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Center(child: Icon(Icons.error));
-            },
-          ),
-        ),
-      );
-    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0), // Top padding added here
+      child: imageUrl.isEmpty
+          ? SizedBox(
+              width: double.infinity,
+              height: 150,
+              child: Container(
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            )
+          : SizedBox(
+              width: double.infinity,
+              height: 150,
+              child: Center(
+                child: Image.network(
+                  getFullImageUrl(imageUrl),
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(child: Icon(Icons.error));
+                  },
+                ),
+              ),
+            ),
+    );
   }
 }

@@ -8,8 +8,8 @@ class HomePageLoading extends HomePageState {}
 
 class HomePageLoaded extends HomePageState {
   final List<MovieEntityModel> movieList;
-
-  HomePageLoaded(this.movieList);
+  final bool hasReachedMax;
+  HomePageLoaded({required this.movieList, required this.hasReachedMax});
 }
 
 class HomePageError extends HomePageState {

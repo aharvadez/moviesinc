@@ -3,7 +3,12 @@ part of 'search_bloc.dart';
 @immutable
 sealed class SearchState {}
 
-final class SearchStateInitial extends SearchState {}
+final class SearchStateInitial extends SearchState {
+  // final bool isLoaded;
+  final List<MovieEntityModel> movies;
+
+  SearchStateInitial({required this.movies});
+}
 
 final class SearchStateLoading extends SearchState {}
 

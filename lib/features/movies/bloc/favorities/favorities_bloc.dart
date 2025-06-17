@@ -13,6 +13,7 @@ class FavoritiesBloc extends Bloc<FavoritiesEvent, FavoritiesState> {
   FavoritiesBloc() : super(FavoritiesInitial([])) {
     final initialFavs = favMovieHandler.getFavoriteMovies();
     favMovieList = List<MovieEntityModel>.from(initialFavs);
+    // ignore: invalid_use_of_visible_for_testing_member
     emit(FavoritiesInitial(List.from(favMovieList)));
 
     on<TriggerAddToFavoritiesEvent>((event, emit) {

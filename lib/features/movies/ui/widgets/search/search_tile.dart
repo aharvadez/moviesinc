@@ -15,14 +15,17 @@ class SearchResultTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       elevation: 4,
       child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            dotenv.env['TMDB_IMAGE_BASE_URL']! + movie.posterUrl,
-            width: 40,
-            height: 75,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+        leading: Hero(
+          tag: 'movie_${movie.id}',
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              dotenv.env['TMDB_IMAGE_BASE_URL']! + movie.posterUrl,
+              width: 40,
+              height: 75,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
+            ),
           ),
         ),
         title: Text(
@@ -39,15 +42,17 @@ class SearchResultTile extends StatelessWidget {
           ],
         ),
         onTap: () {
-          showGeneralDialog(
-            context: context,
-            barrierDismissible: true,
-            barrierLabel: 'Close',
-            barrierColor: Colors.black.withOpacity(0.2),
-            transitionDuration: Duration(milliseconds: 300),
-            pageBuilder: (_, __, ___) {
-              return FullScreenMovieCard(movie: movie);
-            },
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              barrierColor: Colors.black.withOpacity(0.9),
+              transitionDuration: const Duration(milliseconds: 400),
+              pageBuilder: (_, __, ___) => FullScreenMovieCard(movie: movie),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(opacity: animation, child: child);
+                  },
+            ),
           );
         },
       ),

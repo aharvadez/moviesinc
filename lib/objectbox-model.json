@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "3:2803994607678340916",
-      "lastPropertyId": "8:1655315589037065420",
+      "lastPropertyId": "9:4347381242447255918",
       "name": "MovieEntityFavouritesDB",
       "properties": [
         {
@@ -43,12 +43,60 @@
           "id": "7:483172567678594157",
           "name": "posterUrl",
           "type": 9
+        },
+        {
+          "id": "9:4347381242447255918",
+          "name": "overview",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:8806560148796776581",
+      "lastPropertyId": "2:7144307519813828545",
+      "name": "SearchParamsDB",
+      "properties": [
+        {
+          "id": "1:6621743320553871128",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7144307519813828545",
+          "name": "query",
+          "type": 9
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:3768629562089895117",
+      "lastPropertyId": "3:8477637662032197768",
+      "name": "GenreId",
+      "properties": [
+        {
+          "id": "1:90604078526529061",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5748380227674069951",
+          "name": "genre",
+          "type": 9
+        },
+        {
+          "id": "3:8477637662032197768",
+          "name": "remoteId",
+          "type": 6
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "3:2803994607678340916",
+  "lastEntityId": "5:3768629562089895117",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

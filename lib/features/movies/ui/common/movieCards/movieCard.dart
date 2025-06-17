@@ -18,15 +18,28 @@ class MovieCard extends StatelessWidget {
     } else {
       return GestureDetector(
         onTap: () {
-          showGeneralDialog(
-            context: context,
-            barrierDismissible: true,
-            barrierLabel: 'Close',
-            barrierColor: Colors.black.withAlpha(1),
-            transitionDuration: Duration(milliseconds: 300),
-            pageBuilder: (_, __, ___) {
-              return FullScreenMovieCard(movie: movie!);
-            },
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              barrierColor: Colors.black.withOpacity(0.9),
+              transitionDuration: const Duration(milliseconds: 500),
+              pageBuilder: (_, __, ___) => FullScreenMovieCard(movie: movie!),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(
+                        scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                          CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeOut,
+                          ),
+                        ),
+                        child: child,
+                      ),
+                    );
+                  },
+            ),
           );
         },
         child: _buildCard(context),
@@ -97,7 +110,10 @@ class MovieCard extends StatelessWidget {
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
                   ),
-                  child: Imagewidget(imageUrl: movie?.posterUrl ?? ''),
+                  child: Hero(
+                    tag: 'movie_${movie?.id}',
+                    child: Imagewidget(imageUrl: movie?.posterUrl ?? ''),
+                  ),
                 ),
                 Positioned(top: 6, right: 6, child: Favbutton(movie: movie!)),
               ],

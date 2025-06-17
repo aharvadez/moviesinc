@@ -14,7 +14,9 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'core/localDb/genre_id.dart';
 import 'core/localDb/movie_entity_db.dart';
+import 'core/localDb/search_params.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -22,7 +24,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(3, 2803994607678340916),
     name: 'MovieEntityFavouritesDB',
-    lastPropertyId: const obx_int.IdUid(8, 1655315589037065420),
+    lastPropertyId: const obx_int.IdUid(9, 4347381242447255918),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -65,6 +67,62 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(7, 483172567678594157),
         name: 'posterUrl',
         type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 4347381242447255918),
+        name: 'overview',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(4, 8806560148796776581),
+    name: 'SearchParamsDB',
+    lastPropertyId: const obx_int.IdUid(2, 7144307519813828545),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 6621743320553871128),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 7144307519813828545),
+        name: 'query',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(5, 3768629562089895117),
+    name: 'GenreId',
+    lastPropertyId: const obx_int.IdUid(3, 8477637662032197768),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 90604078526529061),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 5748380227674069951),
+        name: 'genre',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 8477637662032197768),
+        name: 'remoteId',
+        type: 6,
         flags: 0,
       ),
     ],
@@ -111,7 +169,7 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(3, 2803994607678340916),
+    lastEntityId: const obx_int.IdUid(5, 3768629562089895117),
     lastIndexId: const obx_int.IdUid(0, 0),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
@@ -149,7 +207,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final yearOffset = fbb.writeString(object.year);
         final genreOffset = fbb.writeString(object.genre);
         final posterUrlOffset = fbb.writeString(object.posterUrl);
-        fbb.startTable(9);
+        final overviewOffset = fbb.writeString(object.overview);
+        fbb.startTable(10);
         fbb.addInt64(0, object.id);
         fbb.addInt64(1, object.movieId);
         fbb.addOffset(2, titleOffset);
@@ -157,6 +216,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(4, genreOffset);
         fbb.addFloat64(5, object.rating);
         fbb.addOffset(6, posterUrlOffset);
+        fbb.addOffset(8, overviewOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -193,6 +253,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final posterUrlParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 16, '');
+        final overviewParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 20, '');
         final object = MovieEntityFavouritesDB(
           id: idParam,
           movieId: movieIdParam,
@@ -201,6 +264,84 @@ obx_int.ModelDefinition getObjectBoxModel() {
           genre: genreParam,
           rating: ratingParam,
           posterUrl: posterUrlParam,
+          overview: overviewParam,
+        );
+
+        return object;
+      },
+    ),
+    SearchParamsDB: obx_int.EntityDefinition<SearchParamsDB>(
+      model: _entities[1],
+      toOneRelations: (SearchParamsDB object) => [],
+      toManyRelations: (SearchParamsDB object) => {},
+      getId: (SearchParamsDB object) => object.id,
+      setId: (SearchParamsDB object, int id) {
+        object.id = id;
+      },
+      objectToFB: (SearchParamsDB object, fb.Builder fbb) {
+        final queryOffset = fbb.writeString(object.query);
+        fbb.startTable(3);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, queryOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final queryParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final object = SearchParamsDB(id: idParam, query: queryParam);
+
+        return object;
+      },
+    ),
+    GenreId: obx_int.EntityDefinition<GenreId>(
+      model: _entities[2],
+      toOneRelations: (GenreId object) => [],
+      toManyRelations: (GenreId object) => {},
+      getId: (GenreId object) => object.id,
+      setId: (GenreId object, int id) {
+        object.id = id;
+      },
+      objectToFB: (GenreId object, fb.Builder fbb) {
+        final genreOffset = fbb.writeString(object.genre);
+        fbb.startTable(4);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, genreOffset);
+        fbb.addInt64(2, object.remoteId);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final idParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          4,
+          0,
+        );
+        final remoteIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          0,
+        );
+        final genreParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final object = GenreId(
+          id: idParam,
+          remoteId: remoteIdParam,
+          genre: genreParam,
         );
 
         return object;
@@ -246,5 +387,41 @@ class MovieEntityFavouritesDB_ {
   /// See [MovieEntityFavouritesDB.posterUrl].
   static final posterUrl = obx.QueryStringProperty<MovieEntityFavouritesDB>(
     _entities[0].properties[6],
+  );
+
+  /// See [MovieEntityFavouritesDB.overview].
+  static final overview = obx.QueryStringProperty<MovieEntityFavouritesDB>(
+    _entities[0].properties[7],
+  );
+}
+
+/// [SearchParamsDB] entity fields to define ObjectBox queries.
+class SearchParamsDB_ {
+  /// See [SearchParamsDB.id].
+  static final id = obx.QueryIntegerProperty<SearchParamsDB>(
+    _entities[1].properties[0],
+  );
+
+  /// See [SearchParamsDB.query].
+  static final query = obx.QueryStringProperty<SearchParamsDB>(
+    _entities[1].properties[1],
+  );
+}
+
+/// [GenreId] entity fields to define ObjectBox queries.
+class GenreId_ {
+  /// See [GenreId.id].
+  static final id = obx.QueryIntegerProperty<GenreId>(
+    _entities[2].properties[0],
+  );
+
+  /// See [GenreId.genre].
+  static final genre = obx.QueryStringProperty<GenreId>(
+    _entities[2].properties[1],
+  );
+
+  /// See [GenreId.remoteId].
+  static final remoteId = obx.QueryIntegerProperty<GenreId>(
+    _entities[2].properties[2],
   );
 }

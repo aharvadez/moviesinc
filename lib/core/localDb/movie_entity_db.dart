@@ -10,6 +10,7 @@ class MovieEntityFavouritesDB {
   final String genre;
   final double rating;
   final String posterUrl;
+  final String overview;
   MovieEntityFavouritesDB({
     this.id = 0,
     required this.movieId,
@@ -18,5 +19,6 @@ class MovieEntityFavouritesDB {
     required this.genre,
     required this.rating,
     required this.posterUrl,
+    required this.overview,
   });
 }

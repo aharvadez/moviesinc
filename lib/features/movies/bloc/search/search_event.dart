@@ -8,3 +8,5 @@ final class SearchEventQueryChanged extends SearchEvent {
 
   SearchEventQueryChanged({required this.query});
 }
+
+final class SearchEventLoadInitial extends SearchEvent {}

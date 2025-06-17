@@ -5,6 +5,7 @@ class MovieEntityModel {
   final String genre;
   final double rating;
   final String posterUrl;
+  final String overview;
 
   MovieEntityModel({
     required this.id,
@@ -13,6 +14,7 @@ class MovieEntityModel {
     required this.genre,
     required this.rating,
     required this.posterUrl,
+    required this.overview,
   });
 
   factory MovieEntityModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class MovieEntityModel {
       genre: json['genre'],
       rating: (json['rating'] as num).toDouble(),
       posterUrl: json['posterUrl'],
+      overview: json['overview'],
     );
   }
 }

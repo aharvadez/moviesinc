@@ -32,3 +32,15 @@ class TmdbMovieNetworkModel {
     return obj;
   }
 }
+
+class GenreNetworkModel {
+  final int id;
+  final String genre;
+
+  GenreNetworkModel({required this.id, required this.genre});
+
+  factory GenreNetworkModel.fromJson(Map<String, dynamic> json) {
+    var obj = GenreNetworkModel(id: json['id'], genre: json['name']);
+    return obj;
+  }
+}

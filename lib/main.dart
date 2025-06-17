@@ -4,13 +4,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:moviesinc/core/constants/themes.dart';
 import 'package:moviesinc/core/utils/objectbox_helper.dart';
 import 'package:moviesinc/features/movies/bloc/favorities/favorities_bloc.dart';
-import 'package:moviesinc/features/movies/ui/widgets/baseLayout/base_layout.dart';
+import 'package:moviesinc/features/movies/repository/db_repository.dart';
+import 'package:moviesinc/features/movies/ui/pages/splash_screen.dart';
 
 late ObjectBox objectBox;
 
 void main() async {
   await dotenv.load(fileName: ".env");
   objectBox = await ObjectBox.create();
+  MaintainGenreIds().saveGenreIds();
   // objectBox.movieBox.removeAll();
   runApp(MoviesApp());
 }
@@ -38,7 +40,7 @@ class MoviesApp extends StatelessWidget {
                 create: (context) => FavoritiesBloc(),
               ),
             ],
-            child: BaseLayout(
+            child: SplashScreen(
               title: 'Movies Inc.',
               value: _themeNotifier.value,
               themeNotifier: _themeNotifier,

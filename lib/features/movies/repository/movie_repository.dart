@@ -1,5 +1,6 @@
 import 'package:moviesinc/core/api/api_service.dart';
 import 'package:moviesinc/core/api/network_models/tmdbNetworkModels.dart';
+import 'package:moviesinc/features/movies/repository/entities/genreEntityModel.dart';
 import 'package:moviesinc/features/movies/repository/entities/movieEntityModel.dart';
 import 'package:moviesinc/features/movies/repository/mappers/tmdbMapper.dart';
 
@@ -7,8 +8,10 @@ class GetPopularMovies {
   final ApiService apiRequest = ApiService();
   final Tmdbmapper mapper = Tmdbmapper();
 
-  Future<List<MovieEntityModel>> fetchMovies() async {
-    final response = await apiRequest.fetchPopularMovies();
+  Future<List<MovieEntityModel>> fetchMovies({int pageNumber = 1}) async {
+    final response = await apiRequest.fetchPopularMovies(
+      pageNumber: pageNumber,
+    );
     final List<TmdbMovieNetworkModel> movies = (response['results'] as List)
         .map((e) => TmdbMovieNetworkModel.fromJson(e))
         .toList();
@@ -32,5 +35,27 @@ class SearchMovies {
         .toList();
 
     return mapper.fromTmdbNetworkModelList(movies);
+  }
+}
+
+class GetGenreData {
+  final ApiService apiRequest = ApiService();
+  final Tmdbmapper mapper = Tmdbmapper();
+
+  Future<List<GenreEntityModel>> fetchGenres() async {
+    final response = await apiRequest.getGenres();
+    final List<GenreNetworkModel> genres = (response['genres'] as List)
+        .map((e) => GenreNetworkModel.fromJson(e))
+        .toList();
+
+    // var finalList =
+
+    // Map<int, String> finalMap = {};
+
+    // for (var item in finalList) {
+    //   finalMap[item.id] = item.genre;
+    // }
+
+    return mapper.fromGenreNetworkModelList(genres);
   }
 }
