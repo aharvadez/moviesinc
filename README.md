@@ -15,3 +15,8 @@ This app serves as a playground to:
 - Practice clean separation between UI and business logic.
 - Gain hands-on experience working with BLoC providers, events, states, and listeners.
 
+
+
+## Reviews
+
+- Splash Screen- use the inbuilt.

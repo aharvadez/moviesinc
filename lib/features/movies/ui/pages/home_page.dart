@@ -14,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 1500) {
+        _scrollController.position.maxScrollExtent - 500) {
       context.read<HomePageBloc>().add(HomePageLoadEvent());
     }
   }
